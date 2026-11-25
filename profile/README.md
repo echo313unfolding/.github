@@ -19,16 +19,17 @@ Scalar k-means VQ with per-group affine correction. No calibration data. Works o
 |------|------|----------|
 | [helix-substrate](https://github.com/echo313unfolding/helix-substrate) | Python quantizer + HuggingFace integration | v0.3.3, 15 models on [HF](https://huggingface.co/EchoLabs33), cos >= 0.999 |
 | [helix-codec](https://github.com/echo313unfolding/helix-codec) | Standalone C99 codec library | Non-LLM proof: 1024 embeddings cos_min 0.9996, MIT |
-| [hxq-native](https://github.com/echo313unfolding/hxq-native) | C/CUDA decompression kernels | GPU decode 27.83 tok/s = Q8_0 parity at 26% less size |
+| [hxq-native](https://github.com/echo313unfolding/hxq-native) | C/CUDA decompression kernels | Standalone decode library, MIT |
 | [hxq-whitepaper](https://github.com/echo313unfolding/hxq-whitepaper) | Technical paper | v3, methodology + results |
-| [llama.cpp fork](https://github.com/echo313unfolding/llama.cpp) | GGML_TYPE_HXQ integration | `hxq-affine-type` branch, 10 files, native mmvq kernel |
+| [llama.cpp fork](https://github.com/echo313unfolding/llama.cpp) | GGML_TYPE_HXQ native CUDA kernels | AF6: [37.35 tok/s on T2000](https://huggingface.co/EchoLabs33/qwen2.5-coder-3b-hxq), [226.53 tok/s on 3090](https://huggingface.co/EchoLabs33/qwen2.5-coder-3b-hxq) |
 | [helix-online-kv](https://github.com/echo313unfolding/helix-online-kv) | KV cache compression (PolarQuant) | Gate PASS: 55-59% MSE improvement, research prototype |
 
 **Key results:**
-- 3090 decode: 226.53 tok/s (92.4% of Q4_K_M, beats Q6_K by 10.6%)
+- T2000 (4 GB): AF6 37.35 tok/s generation, PPL 9.9716 on Qwen2.5-Coder-3B ([receipt](https://github.com/echo313unfolding/echo313unfolding/commit/b2b16e8))
+- 3090: 226.53 tok/s AF6 (model card; beats Q6_K 204.86, trails Q4_K_M 245.03)
+- Mixed-codec Zamba2-1.2B: 60 scalar + 76 two-dimensional VQ modules in one model, PPL 6.83 dense → 7.07 mixed (+3.45%) ([receipt](https://github.com/echo313unfolding/helix-substrate/blob/2a951fd3044a6d142e62f8e3015cd8a49a301c4c/receipts/hxq_af6_probe_qwen3b/MODEL_ZOO_REGRESSION_MATRIX_v3.md#L78-L89))
 - Architecture breadth: Qwen, Llama, Mamba, Zamba2, OLMoE, CLIP, SBERT, ResNet
 - Non-ML tensor distributions pass (Cauchy kurtosis 5765: cos 0.9985)
-- Fractal IFS codebook: 6.7x codebook compression with recursive Barnsley maps (real weights, PASS)
 
 **What is not claimed:** HXQ does not beat Q4_K_M on speed. Its contribution is calibration-free operation, architecture breadth, and the compressed-domain compute path.
 
@@ -38,16 +39,16 @@ Scalar k-means VQ with per-group affine correction. No calibration data. Works o
 
 The experimental program asking: what can you learn about a tensor's *role and behavior* from its compressed representation, without decompressing it?
 
-**Status:** Active research, 217 tests across 15 suites (Phases 0–0.19). Code not yet public — results documented in test receipts.
+**Status:** Active research, 217 tests across 15 suites (Phases 0–0.19). Results documented in local test receipts; code lives in [helix-substrate](https://github.com/echo313unfolding/helix-substrate).
 
-**Proven (by test):**
-- Ghost classifier: k-NN on 292 real tensors. Role accuracy 73.3% (8.1x random baseline), architecture family 92.8%. ([Phase 0.15](https://github.com/echo313unfolding/helix-substrate))
-- Execution prediction: Ghost features beat shape-only on all 6 execution targets. Best: output_norm R² = 0.818 vs shape R² = 0.238. ([Phase 0.16])
-- Pre-route decision: Architecture-aware multi-feature routing clears 53.8% of tensors with precision 0.955, recall 0.904. ([Phase 0.17b])
-- Minimum invariant basis: TE + MO + AC confirmed — dropping any one degrades. Every feature contributes. ([Phase 0.18])
+**Proven (by test, receipts on request):**
+- Ghost classifier: k-NN on 292 real tensors. Role accuracy 73.3% (8.1x random baseline), architecture family 92.8% (Phase 0.15)
+- Execution prediction: Ghost features beat shape-only on all 6 execution targets. Best: output_norm R² = 0.818 vs shape R² = 0.238 (Phase 0.16)
+- Pre-route decision: Architecture-aware multi-feature routing clears 53.8% of tensors with precision 0.955, recall 0.904 (Phase 0.17b)
+- Minimum invariant basis: TE + MO + AC confirmed — dropping any one degrades. Every feature contributes (Phase 0.18)
 
 **Active hypothesis:**
-- Cross-architecture generalization is family-specific, not universal. Within-family transfers (Mamba → Mamba2: 88.5%). Cross-family fails. ([Phase 0.19])
+- Cross-architecture generalization is family-specific, not universal. Within-family transfers (Mamba → Mamba2: 88.5%). Cross-family fails (Phase 0.19)
 
 **Speculative:**
 - Whether ghost coordinates constitute a substrate-independent behavioral description (Level 4 claim — too strong, not proven)
@@ -62,7 +63,7 @@ MorphSAT answers this by embedding the model inside an external control structur
 
 | Repo | What | Evidence |
 |------|------|----------|
-| [MorphSAT](https://github.com/echo313unfolding/MorphSAT) | Full implementation + benchmark | 100% accuracy (v8.3), 123 tests, MIT |
+| [MorphSAT](https://github.com/echo313unfolding/MorphSAT) | Full implementation + benchmark + preregistered validation | 100% accuracy (v8.3), 321+ tests, MIT |
 
 **Key results:**
 - v8.3: 100% on 20-scenario benchmark (gate_assists + early-verdict guard)
@@ -97,7 +98,7 @@ Maps federal obligations, tariffs, mineral supply chains, donor networks, and re
 
 | Repo | What | Evidence |
 |------|------|----------|
-| [FGIP](https://github.com/echo313unfolding/FGIP) | Graph database + 24 agents | 2,100+ nodes, 2,800+ edges, 69K+ proposed |
+| [FGIP](https://github.com/echo313unfolding/FGIP) | Graph database + 24 agents | 5,496 nodes, 10,535 edges, 44,308 claims |
 | [fgip-globe](https://github.com/echo313unfolding/fgip-globe) | CesiumJS 3D visualization | Geospatial rendering of funding chains |
 
 **Proven findings:** Energy intensity explains tariff gradient (r = 0.709, p < 0.01). Sanctions evasion as formula DISPROVEN (r = 0.016). 5GW citation chain mapped into SCOTUS amicus record.
