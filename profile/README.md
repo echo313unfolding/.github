@@ -119,11 +119,11 @@ Protocol-level quality enforcement for off-chain artifacts. Token-2022 Transfer 
 
 If you study cognitive architectures, structured agency, or substrate-independent computation:
 
-1. **Start here:** [MorphSAT — Cognitive Architecture Translation](https://github.com/echo313unfolding/MorphSAT/blob/main/docs/COGNITIVE_ARCHITECTURE_TRANSLATION.md)
+1. **Start here:** [MorphSAT — Cognitive Architecture Translation](https://github.com/echo313unfolding/MorphSAT/blob/master/docs/COGNITIVE_ARCHITECTURE_TRANSLATION.md)
    - Direct term mapping: MorphSAT → Soar, ACT-R, active inference
    - The research question is operator selection under uncertainty with bounded resources
 
-2. **Then:** [MorphSAT — Technical Note](https://github.com/echo313unfolding/MorphSAT/blob/main/docs/morphsat_technical_note.md)
+2. **Then:** [MorphSAT — Technical Note](https://github.com/echo313unfolding/MorphSAT/blob/master/docs/morphsat_technical_note.md)
    - 2-page summary with experimental results
    - Nine-version ablation chain showing which control mechanisms work and which fail
 
