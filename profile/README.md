@@ -72,8 +72,8 @@ MorphSAT answers this by embedding the model inside an external control structur
 - Novelty-as-penalty DEAD (v6). Novelty-as-posture WORKS (v7): benign accuracy 35.7% → 78.6%
 
 **For cognitive architecture reviewers:**
-- [`docs/COGNITIVE_ARCHITECTURE_TRANSLATION.md`](https://github.com/echo313unfolding/MorphSAT/blob/main/docs/COGNITIVE_ARCHITECTURE_TRANSLATION.md) — term mapping to Soar, ACT-R, and active inference
-- [`docs/morphsat_technical_note.md`](https://github.com/echo313unfolding/MorphSAT/blob/main/docs/morphsat_technical_note.md) — 2-page technical note with full results
+- [`docs/COGNITIVE_ARCHITECTURE_TRANSLATION.md`](https://github.com/echo313unfolding/MorphSAT/blob/master/docs/COGNITIVE_ARCHITECTURE_TRANSLATION.md) — term mapping to Soar, ACT-R, and active inference
+- [`docs/morphsat_technical_note.md`](https://github.com/echo313unfolding/MorphSAT/blob/master/docs/morphsat_technical_note.md) — 2-page technical note with full results
 - Shadow monitor maps to Soar's operator selection + metacognitive control
 - Split memory (threat/tolerance stores) maps to episodic memory with bidirectional familiarity
 - Swarm escalation maps to impasse/substate handling
